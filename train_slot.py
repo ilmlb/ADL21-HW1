@@ -15,6 +15,8 @@ from utils import Vocab
 from seqeval.metrics import classification_report
 from seqeval.scheme import IOB2
 
+from focal_loss import FocalLoss
+
 TRAIN = "train"
 DEV = "eval"
 SPLITS = [TRAIN, DEV]
@@ -46,7 +48,8 @@ def main(args):
 
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
 
-    criterion = torch.nn.CrossEntropyLoss()
+    # criterion = torch.nn.CrossEntropyLoss()
+    criterion = FocalLoss(gamma=2)
 
     best_acc = 0.7
 
@@ -80,9 +83,9 @@ def main(args):
         if eval_joint_acc > best_acc:
             best_acc = eval_joint_acc
             print('Saving model with best joint accuracy {:.3f}'.format(best_acc))
-            torch.save(model.state_dict(), f"./ckpt/slot/{args.num_layers}_{args.hidden_size}_{args.recurrent_struc}.ckpt")
+            torch.save(model.state_dict(), f"./ckpt/slot/{args.num_layers}_{args.hidden_size}_{args.recurrent_struc}_focalloss.ckpt")
 
-    print(f"Finish training. The saved weight, {args.num_layers}_{args.hidden_size}_{args.recurrent_struc}.ckpt, has {best_acc} joint accuracy.")
+    print(f"Finish training. The saved weight, {args.num_layers}_{args.hidden_size}_{args.recurrent_struc}_focalloss.ckpt, has {best_acc} joint accuracy.")
 
             
         

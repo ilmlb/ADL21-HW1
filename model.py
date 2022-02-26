@@ -94,6 +94,7 @@ class SlotTagger(nn.Module):
         return self.hidden_size * (1 + self.bidirectional)
 
     def forward(self, batch, _len) -> Dict[str, torch.Tensor]:
+        # reference: https://clay-atlas.com/blog/2020/07/15/pytorch-cn-pad_packed_sequence-pack-padded/
         embedded = self.embedding(batch)
         packed_embedded = nn.utils.rnn.pack_padded_sequence(embedded, _len, batch_first=True)
         if isinstance(self.recurrent, nn.LSTM):
