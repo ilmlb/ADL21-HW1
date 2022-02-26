@@ -5,6 +5,8 @@ from pathlib import Path
 from typing import Dict
 
 import torch
+from torch.utils.data import DataLoader
+from tqdm import tqdm
 
 from dataset import SeqClsDataset
 from model import SeqClassifier
@@ -20,7 +22,9 @@ def main(args):
 
     data = json.loads(args.test_file.read_text())
     dataset = SeqClsDataset(data, vocab, intent2idx, args.max_len)
+    # print(dataset[0])
     # TODO: crecate DataLoader for test dataset
+    test_loader = DataLoader(dataset, batch_size=args.batch_size, shuffle=False, collate_fn=dataset.collate_fn)
 
     embeddings = torch.load(args.cache_dir / "embeddings.pt")
 
@@ -31,15 +35,31 @@ def main(args):
         args.dropout,
         args.bidirectional,
         dataset.num_classes,
-    )
+        args.recurrent_struc
+    ).to(args.device)
     model.eval()
 
     ckpt = torch.load(args.ckpt_path)
     # load weights into model
+    model.load_state_dict(ckpt)
 
     # TODO: predict dataset
+    pred = []
+    for data, _len in tqdm(test_loader):
+        data['text'] = data['text'].to(args.device)
+        with torch.no_grad():
+            logit = model(data['text'], _len)
+        idx = logit.argmax(dim=-1).cpu().tolist()
+        label = [dataset.idx2label(i) for i in idx]
+        pred += zip(data['id'], label)
+    pred.sort(key=lambda x: int(x[0][5:]))
+        
 
     # TODO: write prediction to file (args.pred_file)
+    with open(args.pred_file, "w") as f:
+        f.write("id,intent\n")
+        for id, intent in  pred:
+            f.write(f"{id},{intent}\n")
 
 
 def parse_args() -> Namespace:
@@ -68,6 +88,7 @@ def parse_args() -> Namespace:
     parser.add_argument("--max_len", type=int, default=128)
 
     # model
+    parser.add_argument("--recurrent_struc", type=str, help="rnn, lstm, gru", default="lstm")
     parser.add_argument("--hidden_size", type=int, default=512)
     parser.add_argument("--num_layers", type=int, default=2)
     parser.add_argument("--dropout", type=float, default=0.1)
@@ -77,7 +98,7 @@ def parse_args() -> Namespace:
     parser.add_argument("--batch_size", type=int, default=128)
 
     parser.add_argument(
-        "--device", type=torch.device, help="cpu, cuda, cuda:0, cuda:1", default="cpu"
+        "--device", type=torch.device, help="cpu, cuda, cuda:0, cuda:1", default="cuda"
     )
     args = parser.parse_args()
     return args
