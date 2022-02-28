@@ -48,8 +48,7 @@ def main(args):
 
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
 
-    # criterion = torch.nn.CrossEntropyLoss()
-    criterion = FocalLoss(gamma=2)
+    criterion = FocalLoss(gamma=2) if args.loss == 'focal' else torch.nn.CrossEntropyLoss()
 
     best_acc = 0.7
 
@@ -83,9 +82,9 @@ def main(args):
         if eval_joint_acc > best_acc:
             best_acc = eval_joint_acc
             print('Saving model with best joint accuracy {:.3f}'.format(best_acc))
-            torch.save(model.state_dict(), f"./ckpt/slot/{args.num_layers}_{args.hidden_size}_{args.recurrent_struc}_focalloss.ckpt")
+            torch.save(model.state_dict(), f"./ckpt/slot/{args.num_layers}_{args.hidden_size}_{args.recurrent_struc}_{args.loss}.ckpt")
 
-    print(f"Finish training. The saved weight, {args.num_layers}_{args.hidden_size}_{args.recurrent_struc}_focalloss.ckpt, has {best_acc} joint accuracy.")
+    print(f"Finish training. The saved weight, {args.num_layers}_{args.hidden_size}_{args.recurrent_struc}_{args.loss}.ckpt, has {best_acc} joint accuracy.")
 
             
         
@@ -128,6 +127,8 @@ def parse_args() -> Namespace:
         "--device", type=torch.device, help="cpu, cuda, cuda:0, cuda:1", default="cuda"
     )
     parser.add_argument("--num_epoch", type=int, default=100)
+
+    parser.add_argument("--loss", type=str, default="ce")
 
     args = parser.parse_args()
     return args
