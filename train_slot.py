@@ -82,9 +82,9 @@ def main(args):
         if eval_joint_acc > best_acc:
             best_acc = eval_joint_acc
             print('Saving model with best joint accuracy {:.3f}'.format(best_acc))
-            torch.save(model.state_dict(), f"./ckpt/slot/{args.num_layers}_{args.hidden_size}_{args.recurrent_struc}_{args.loss}.ckpt")
+            torch.save(model.state_dict(), f"./ckpt/slot/{args.ckpt_name}")
 
-    print(f"Finish training. The saved weight, {args.num_layers}_{args.hidden_size}_{args.recurrent_struc}_{args.loss}.ckpt, has {best_acc} joint accuracy.")
+    print(f"Finish training. The saved weight, {args.ckpt_name}, has {best_acc} joint accuracy.")
 
             
         
@@ -109,6 +109,12 @@ def parse_args() -> Namespace:
         type=Path,
         help="Directory to save the model file.",
         default="./ckpt/slot/",
+    )
+    parser.add_argument(
+        "--ckpt_name",
+        type=str,
+        help="Name of model checkpoint.",
+        required=True
     )
 
     parser.add_argument("--max_len", type=int, default=128)

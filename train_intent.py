@@ -81,9 +81,9 @@ def main(args):
         if eval_acc > best_acc:
             best_acc = eval_acc
             print('Saving model with best accuracy {:.3f}'.format(best_acc))
-            torch.save(model.state_dict(), f"./ckpt/intent/{args.num_layers}_{args.hidden_size}_{args.recurrent_struc}.ckpt")
+            torch.save(model.state_dict(), f"./ckpt/intent/{args.ckpt_name}")
     
-    print(f"Finish training. The saved weight, {args.num_layers}_{args.hidden_size}_{args.recurrent_struc}.ckpt, has {best_acc} accuracy.")
+    print(f"Finish training. The saved weight, {args.ckpt_name}, has {best_acc} accuracy.")
 
     # TODO: Inference on test set
         
@@ -108,6 +108,12 @@ def parse_args() -> Namespace:
         type=Path,
         help="Directory to save the model file.",
         default="./ckpt/intent/",
+    )
+    parser.add_argument(
+        "--ckpt_name",
+        type=str,
+        help="Name of model checkpoint.",
+        required=True
     )
 
     # data
