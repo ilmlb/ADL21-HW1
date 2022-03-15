@@ -34,7 +34,9 @@ def main(args):
         args.dropout,
         args.bidirectional,
         dataset.num_classes,
-        args.recurrent_struc
+        args.recurrent_struc,
+        args.out_channels,
+        args.kernel_size
     ).to(args.device)
     model.eval()
 
@@ -89,11 +91,14 @@ def parse_args() -> Namespace:
     parser.add_argument("--max_len", type=int, default=128)
 
     # model
-    parser.add_argument("--recurrent_struc", type=str, help="rnn, lstm, gru", default="lstm")
+    parser.add_argument("--recurrent_struc", type=str, help="rnn, lstm, gru, cnnlstm", default="lstm")
     parser.add_argument("--hidden_size", type=int, default=512)
     parser.add_argument("--num_layers", type=int, default=2)
     parser.add_argument("--dropout", type=float, default=0.1)
     parser.add_argument("--bidirectional", type=bool, default=True)
+    # for cnnlstm
+    parser.add_argument("--out_channels", type=int, default=100)
+    parser.add_argument("--kernel_size", type=int, default=3)
 
     # data loader
     parser.add_argument("--batch_size", type=int, default=128)

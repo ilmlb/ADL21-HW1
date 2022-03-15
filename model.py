@@ -67,7 +67,9 @@ class SlotTagger(nn.Module):
         dropout: float,
         bidirectional: bool,
         num_class: int,
-        recurrent_struc: str
+        recurrent_struc: str,
+        out_channels: int,
+        kernel_size: int
     ) -> None:
         super(SlotTagger, self).__init__()
         self.embedding_dim = embeddings.size(1)
@@ -82,6 +84,10 @@ class SlotTagger(nn.Module):
             self.recurrent = nn.LSTM(self.embedding_dim, self.hidden_size, num_layers, batch_first=True, dropout=self.dropout, bidirectional=self.bidirectional)
         elif recurrent_struc == 'gru':
             self.recurrent = nn.GRU(self.embedding_dim, self.hidden_size, num_layers, batch_first=True, dropout=self.dropout, bidirectional=self.bidirectional)
+        elif recurrent_struc == 'cnnlstm':
+            assert kernel_size % 2
+            self.conv = nn.Conv1d(in_channels=self.embedding_dim, out_channels=out_channels, kernel_size=kernel_size, padding=(kernel_size - 1) // 2)
+            self.recurrent = nn.LSTM(out_channels, self.hidden_size, num_layers, batch_first=True, dropout=self.dropout, bidirectional=self.bidirectional)
         else:
             raise ValueError(f"Select a recurrent structure within rnn, lstm, or gru.")
         self.fc = nn.Sequential(
@@ -96,6 +102,9 @@ class SlotTagger(nn.Module):
     def forward(self, batch, _len) -> Dict[str, torch.Tensor]:
         # reference: https://clay-atlas.com/blog/2020/07/15/pytorch-cn-pad_packed_sequence-pack-padded/
         embedded = self.embedding(batch)
+        if hasattr(self, 'conv'):
+            embedded = self.conv(torch.transpose(embedded, 1, 2))
+            embedded = torch.transpose(embedded, 1, 2)
         packed_embedded = nn.utils.rnn.pack_padded_sequence(embedded, _len, batch_first=True)
         if isinstance(self.recurrent, nn.LSTM):
             packed_output, (hidden, cell) = self.recurrent(packed_embedded)

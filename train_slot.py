@@ -44,7 +44,7 @@ def main(args):
     embeddings = torch.load(args.cache_dir / "embeddings.pt")
     # print(embeddings.shape)
     
-    model = SlotTagger(embeddings, args.hidden_size, args.num_layers, args.dropout, args.bidirectional, len(tag2idx), args.recurrent_struc).to(args.device)
+    model = SlotTagger(embeddings, args.hidden_size, args.num_layers, args.dropout, args.bidirectional, len(tag2idx), args.recurrent_struc, args.out_channels, args.kernel_size).to(args.device)
 
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
 
@@ -119,11 +119,14 @@ def parse_args() -> Namespace:
 
     parser.add_argument("--max_len", type=int, default=128)
 
-    parser.add_argument("--recurrent_struc", type=str, help="rnn, lstm, gru", default="lstm")
+    parser.add_argument("--recurrent_struc", type=str, help="rnn, lstm, gru, cnnlstm", default="lstm")
     parser.add_argument("--hidden_size", type=int, default=512)
     parser.add_argument("--num_layers", type=int, default=2)
     parser.add_argument("--dropout", type=float, default=0.1)
     parser.add_argument("--bidirectional", type=bool, default=True)
+    # for cnnlstm
+    parser.add_argument("--out_channels", type=int, default=100)
+    parser.add_argument("--kernel_size", type=int, default=3)
 
     parser.add_argument("--lr", type=float, default=1e-3)
 

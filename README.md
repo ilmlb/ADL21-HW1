@@ -66,6 +66,8 @@ python train_slot.py [--data_dir dir] [--cache_dir dir] [--ckpt_dir dir] <--ckpt
 - `--num_layers`: Default=2
 - `--dropout`: Default=0.1
 - `--bidirectional`: Default=True
+- `--out_channels`: The number of output channels of convolution layers of CNN-LSTM. Default=100
+- `--kernel_size`: The kernel size of convolution layers of CNN-LSTM must be odd. Default=3
 - `--lr`: Learning rate. Default=0.001
 - `--batch_size`: Default=128
 - `--device`: cpu|cuda. Default="cuda"
@@ -85,5 +87,7 @@ python test_slot.py <--test_file file> [--cache_dir dir] <--ckpt_path ckpt> [--p
 - `--num_layers`: Default=2
 - `--dropout`: Default=0.1
 - `--bidirectional`: Default=True
+- `--out_channels`: The number of output channels of convolution layers of CNN-LSTM. Default=100
+- `--kernel_size`: The kernel size of convolution layers of CNN-LSTM must be odd. Default=3
 - `--batch_size`: Default=128
 - `--device`: cpu|cuda. Default="cuda"
