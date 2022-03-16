@@ -54,7 +54,7 @@ python test_intent.py <--test_file file> [--cache_dir dir] <--ckpt_path ckpt> [-
 ## Slot tagging
 ### Training
 ```shell
-python train_slot.py [--data_dir dir] [--cache_dir dir] [--ckpt_dir dir] <--ckpt_name ckpt> [--max_len len] [--recurrent_struc rnn] [--hidden_size hidden] [--num_layers layer] [--dropout drop] [--bidirectional bool] [--lr lr] [--batch_size batch] [--device cuda] [--num_epoch epoch] [--loss loss]
+python train_slot.py [--data_dir dir] [--cache_dir dir] [--ckpt_dir dir] <--ckpt_name ckpt> [--max_len len] [--recurrent_struc rnn] [--hidden_size hidden] [--num_layers layer] [--dropout drop] [--bidirectional bool] [--out_channels channel] [--kernel_size kernel] [--lr lr] [--batch_size batch] [--device cuda] [--num_epoch epoch] [--loss loss]
 ```
 - `--data_dir`: Directory to the dataset. Default="./data/slot/"
 - `--cache_dir`: Directory to the preprocessed caches. Default="./cache/slot/"
@@ -75,7 +75,7 @@ python train_slot.py [--data_dir dir] [--cache_dir dir] [--ckpt_dir dir] <--ckpt
 - `--loss`: Loss function. ce|focal. Default="ce"
 ### Testing
 ```shell
-python test_slot.py <--test_file file> [--cache_dir dir] <--ckpt_path ckpt> [--pred_file file] [--max_len len] [--recurrent_struc rnn] [--hidden_size hidden] [--num_layers layer] [--dropout drop] [--bidirectional bool] [--batch_size batch] [--device cuda]
+python test_slot.py <--test_file file> [--cache_dir dir] <--ckpt_path ckpt> [--pred_file file] [--max_len len] [--recurrent_struc rnn] [--hidden_size hidden] [--num_layers layer] [--dropout drop] [--bidirectional bool] [--out_channels channel] [--kernel_size kernel] [--batch_size batch] [--device cuda]
 ```
 - `--test_file`: Path to the test file. 
 - `--cache_dir`: Directory to the preprocessed caches. Default="./cache/slot/"
