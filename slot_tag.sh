@@ -1,1 +1,1 @@
-python3.8 test_slot.py --test_file "${1}" --ckpt_path ckpt/slot/best.pt --pred_file "${2}"
+python3 test_slot.py --test_file "${1}" --ckpt_path ckpt/slot/lstm_3layer.ckpt --pred_file "${2}" --num_layers 3
