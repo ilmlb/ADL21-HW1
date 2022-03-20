@@ -10,7 +10,7 @@ pip install -r requirements.txt
 
 ## Preprocessing
 ```shell
-# To preprocess intent detectiona and slot tagging datasets
+# To preprocess intent classification and slot tagging datasets
 bash preprocess.sh
 ```
 
